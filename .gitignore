@@ -4,6 +4,7 @@ service/*.exe
 service/*.exe~
 service/*.test
 service/*.out
+service/uploads/
 
 # Node
 frontend/node_modules/
@@ -20,3 +21,6 @@ frontend/.vite/
 # OS
 .DS_Store
 Thumbs.db
+
+# Env
+.env

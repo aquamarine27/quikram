@@ -1,8 +1,34 @@
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: quikram
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   service:
     build: ./service
     ports:
       - "8080:8080"
+    environment:
+      PORT: "8080"
+      ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/quikram?sslmode=disable
+      JWT_ACCESS_SECRET: dev-access-secret
+      JWT_REFRESH_SECRET: dev-refresh-secret
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -12,3 +38,6 @@ services:
     depends_on:
       - service
     restart: unless-stopped
+
+volumes:
+  pgdata:
