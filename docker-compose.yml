@@ -1,0 +1,14 @@
+services:
+  service:
+    build: ./service
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - service
+    restart: unless-stopped
