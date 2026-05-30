@@ -9,8 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
+    "axios": "^1.16.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.76.1",
+    "react-router-dom": "^7.16.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
