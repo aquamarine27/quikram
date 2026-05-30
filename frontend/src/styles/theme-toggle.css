@@ -1,0 +1,31 @@
+/* ─── Toggle button ─── */
+.theme-toggle {
+  all: unset;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1.5px solid var(--border-default);
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: var(--social-hover-bg);
+}
+
+/* ─── Icon rotation ─── */
+.theme-toggle-icon {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle-icon.dark {
+  transform: rotate(360deg);
+}

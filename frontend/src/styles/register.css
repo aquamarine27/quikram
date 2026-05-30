@@ -1,0 +1,374 @@
+/* ─── Layout ─── */
+.register-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--page-bg);
+}
+
+/* ─── Card ─── */
+.register-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  box-shadow: var(--card-shadow);
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid transparent;
+  animation: card-in 0.6s ease-out;
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.register-card-expanded {
+  transform: scale(1.025);
+  box-shadow: var(--card-shadow-expanded);
+}
+
+.register-card-error {
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+/* ─── Card header controls ─── */
+.register-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.register-title {
+  font-size: 24px;
+  margin: 0 0 28px;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ─── Field ─── */
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-inner {
+  position: relative;
+  border: 1.5px solid var(--border-default);
+  border-radius: 12px;
+  background: var(--field-bg);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.field-inner:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.field-inner-error {
+  border-color: var(--border-error) !important;
+  animation: field-shake 0.4s ease-out;
+}
+
+@keyframes field-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.field-input {
+  width: 100%;
+  padding: 20px 16px 8px;
+  font-size: 13px;
+  border: none;
+  border-radius: 12px;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.field-label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--field-label-bg);
+  padding: 0 6px;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.field-input:focus + .field-label,
+.field-input:not(:placeholder-shown) + .field-label {
+  top: -11px;
+  transform: translateY(0);
+  font-size: 10px;
+  color: var(--border-focus);
+}
+
+.field-error {
+  color: var(--border-error);
+  font-size: 12px;
+  margin-top: 5px;
+  padding-left: 4px;
+  animation: fade-up 0.25s ease-out;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Password eye ─── */
+.field-password .field-input {
+  padding-right: 48px;
+}
+
+.field-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  color: var(--text-muted);
+  transition: color 0.25s ease;
+}
+
+.field-eye:hover {
+  color: var(--text-primary);
+}
+
+/* ─── Button (smooth diagonal fill) ─── */
+.register-btn {
+  position: relative;
+  width: 100%;
+  padding: 16px 24px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1.5px solid var(--btn-border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  background-image: var(--btn-gradient);
+  background-size: 280% 280%;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  transition:
+    background-position 1.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    color 0.7s ease,
+    transform 0.3s ease,
+    box-shadow 0.4s ease;
+  will-change: background-position;
+}
+
+.register-btn:hover {
+  color: var(--link-hover);
+  background-position: 0% 0%;
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-expanded);
+}
+
+.register-btn:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+.register-btn:disabled {
+  background: var(--btn-disabled-bg);
+  background-image: none;
+  color: var(--btn-disabled-text);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── Footer link (black → red + slide underline) ─── */
+.register-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.register-footer a {
+  color: var(--link-color);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.4s ease;
+}
+
+.register-footer a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--link-color);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.register-footer a:hover {
+  color: var(--link-hover);
+}
+
+.register-footer a:hover::after {
+  width: 100%;
+}
+
+/* ─── Divider + Social ─── */
+.register-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.register-divider::before,
+.register-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--divider-bg);
+}
+
+.register-divider-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.register-social {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.register-social-btn {
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid var(--social-border);
+  border-radius: 14px;
+  background: var(--social-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.register-social-btn:hover {
+  border-color: var(--text-primary);
+  background: var(--social-hover-bg);
+  transform: translateY(-3px);
+}
+
+.register-social-btn:active {
+  transform: scale(0.93);
+}
+
+/* ─── Responsive: tablet ─── */
+@media (max-width: 768px) {
+  .register-card {
+    padding: 36px 28px;
+  }
+
+  .register-title {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .register-form {
+    gap: 20px;
+  }
+}
+
+/* ─── Responsive: phone ─── */
+@media (max-width: 480px) {
+  .register-page {
+    padding: 12px;
+  }
+
+  .register-card {
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+
+  .register-title {
+    font-size: 20px;
+    margin-bottom: 22px;
+  }
+
+  .register-form {
+    gap: 18px;
+  }
+
+  .register-btn {
+    padding: 14px 20px;
+    font-size: 13px;
+  }
+
+  .register-footer {
+    font-size: 11px;
+  }
+
+  .register-divider {
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .register-divider-text {
+    font-size: 10px;
+  }
+
+  .register-social {
+    gap: 12px;
+  }
+
+  .register-social-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .field-input {
+    font-size: 16px;
+    padding: 22px 14px 10px;
+  }
+
+  .field-label {
+    font-size: 13px;
+  }
+
+  .field-error {
+    font-size: 11px;
+  }
+
+  .register-card-expanded {
+    transform: scale(1.015);
+  }
+}

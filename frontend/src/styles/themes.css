@@ -1,0 +1,83 @@
+/* ─── Light theme (default) ─── */
+:root {
+  --btn-gradient: linear-gradient(135deg,
+    #000 0%, #000 28%,
+    rgba(0,0,0,0.88) 36%,
+    rgba(0,0,0,0.5) 46%,
+    rgba(0,0,0,0.18) 56%,
+    transparent 66%, transparent 100%
+  );
+  --page-bg: #000;
+  --card-bg: #fff;
+  --card-shadow: 0 8px 40px rgba(255, 255, 255, 0.06);
+  --card-shadow-expanded: 0 24px 64px rgba(255, 255, 255, 0.1);
+  --text-primary: #000;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border-default: #d1d5db;
+  --border-focus: #000;
+  --border-error: #ef4444;
+  --field-bg: #fff;
+  --field-label-bg: #fff;
+  --focus-ring: 0 0 0 4px rgba(0, 0, 0, 0.05);
+  --btn-border: #000;
+  --btn-disabled-bg: #555;
+  --btn-disabled-text: #fff;
+  --divider-bg: #e5e7eb;
+  --social-bg: #fff;
+  --social-hover-bg: #f9fafb;
+  --social-border: #e5e7eb;
+  --link-color: #000;
+  --link-hover: #ef4444;
+  --plan-bg: #f3f4f6;
+  --plan-color: #374151;
+  --profile-avatar-bg: #000;
+  --profile-avatar-text: #fff;
+  --toast-bg: rgba(28, 28, 30, 0.88);
+  --toast-border: rgba(255, 255, 255, 0.06);
+  --toast-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --toast-bar-bg: rgba(255, 255, 255, 0.12);
+  --avatar-shadow: none;
+}
+
+/* ─── Dark theme ─── */
+[data-theme="dark"] {
+  --btn-gradient: linear-gradient(135deg,
+    #f4f4f5 0%, #f4f4f5 28%,
+    rgba(244,244,245,0.88) 36%,
+    rgba(244,244,245,0.5) 46%,
+    rgba(244,244,245,0.18) 56%,
+    transparent 66%, transparent 100%
+  );
+  --page-bg: #111118;
+  --card-bg: #1c1c24;
+  --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --card-shadow-expanded: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border-default: #3f3f46;
+  --border-focus: #f4f4f5;
+  --border-error: #ef4444;
+  --field-bg: rgba(255, 255, 255, 0.04);
+  --field-label-bg: #1c1c24;
+  --focus-ring: 0 0 0 4px rgba(255, 255, 255, 0.06);
+  --btn-border: #f4f4f5;
+  --btn-disabled-bg: #3f3f46;
+  --btn-disabled-text: #a1a1aa;
+  --divider-bg: #3f3f46;
+  --social-bg: rgba(255, 255, 255, 0.04);
+  --social-hover-bg: rgba(255, 255, 255, 0.08);
+  --social-border: #3f3f46;
+  --link-color: #f4f4f5;
+  --link-hover: #ef4444;
+  --plan-bg: rgba(255, 255, 255, 0.06);
+  --plan-color: #d4d4d8;
+  --profile-avatar-bg: #f4f4f5;
+  --profile-avatar-text: #1c1c24;
+  --toast-bg: rgba(20, 20, 25, 0.92);
+  --toast-border: rgba(255, 255, 255, 0.08);
+  --toast-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --toast-bar-bg: rgba(255, 255, 255, 0.15);
+  --avatar-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}

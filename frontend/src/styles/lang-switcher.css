@@ -1,0 +1,85 @@
+/* ─── Container ─── */
+.lang-switcher {
+  position: relative;
+  z-index: 100;
+}
+
+/* ─── Trigger button ─── */
+.lang-btn {
+  all: unset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-default);
+  transition: all 0.25s ease;
+}
+
+.lang-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: var(--social-hover-bg);
+}
+
+/* ─── Chevron ─── */
+.lang-chevron {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lang-chevron-open {
+  transform: rotate(180deg);
+}
+
+/* ─── Dropdown ─── */
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.95);
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lang-dropdown-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ─── Option ─── */
+.lang-opt {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-secondary);
+  text-align: center;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.lang-opt:hover {
+  background: var(--social-hover-bg);
+  color: var(--text-primary);
+}
+
+.lang-opt-active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
