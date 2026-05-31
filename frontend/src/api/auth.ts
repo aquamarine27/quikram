@@ -22,6 +22,10 @@ export interface LoginResponse {
     email: string;
     name: string;
     plan: string;
+    uploads_this_month: number;
+    uploads_reset_at: string | null;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -61,4 +65,29 @@ export function logout() {
 
 export function getProfile() {
   return authPost<LoginResponse["user"]>("/auth/profile", {});
+}
+
+// ─── POST /users/me/change-password ───
+export interface ChangePasswordData {
+  old_password: string;
+  new_password: string;
+}
+
+export async function changePassword(data: ChangePasswordData): Promise<{ data: { message: string } }> {
+  const { default: client } = await import("./client");
+  const res = await client.post<{ message: string }>("/users/me/change-password", data);
+  return { data: res.data };
+}
+
+// ─── GET /analytics/me ───
+export interface AnalyticsData {
+  subjects_count: number;
+  total_tests: number;
+  average_score: number;
+}
+
+export async function getAnalytics(): Promise<{ data: AnalyticsData }> {
+  const { default: client } = await import("./client");
+  const res = await client.get<AnalyticsData>("/analytics/me");
+  return { data: res.data };
 }

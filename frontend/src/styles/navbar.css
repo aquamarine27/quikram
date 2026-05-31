@@ -1,0 +1,303 @@
+/* ─── Navbar ─── */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+}
+
+.navbar-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    padding: 0 32px;
+    position: relative;
+}
+
+
+/* ─── Burger (phone only) ─── */
+
+.navbar-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    position: absolute;
+    left: 32px;
+}
+
+.burger-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--nav-text);
+    border-radius: 1px;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s;
+    transform-origin: center;
+}
+
+.burger-line--open:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.burger-line--open:nth-child(2) {
+    opacity: 0;
+}
+
+.burger-line--open:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* ─── Brand ─── */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--nav-text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 0;
+    line-height: 1;
+}
+
+.navbar-brand-mobile {
+    display: none;
+    color: var(--nav-text);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.navbar-arrow {
+    font-size: 11px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.navbar-arrow--open {
+    transform: rotate(180deg);
+}
+
+
+/* ─── Actions ─── */
+
+.navbar-actions {
+    position: absolute;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.navbar-icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    color: var(--nav-icon);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.25s, background 0.25s;
+    line-height: 1;
+}
+
+.navbar-icon-btn:hover {
+    color: var(--nav-link-hover);
+    background: rgba(128, 128, 128, 0.08);
+}
+
+.navbar-notif-wrap {
+    position: relative;
+}
+
+.navbar-settings-wrap {
+    position: relative;
+}
+
+.navbar-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--nav-text);
+    padding: 4px 10px;
+    border-radius: 10px;
+    transition: background 0.25s;
+}
+
+.navbar-profile:hover {
+    background: rgba(128, 128, 128, 0.08);
+}
+
+.navbar-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--nav-avatar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--nav-avatar-text);
+}
+
+.navbar-username {
+    color: var(--nav-username);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* ─── Dropdown ─── */
+
+.navbar-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.navbar-dropdown--open {
+    max-height: 140px;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    height: 60px;
+    border-top: 1px solid var(--nav-divider);
+    background: var(--nav-bg);
+}
+
+.navbar-link {
+    color: var(--nav-link);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 4px 0;
+    position: relative;
+    transition: color 0.35s ease;
+}
+
+.navbar-link:hover {
+    color: #ef4444;
+}
+
+.navbar-link--active {
+    color: var(--nav-link-hover);
+}
+
+.navbar-link--active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--nav-link-hover);
+    border-radius: 1px;
+}
+
+
+/* ─── Tablet ─── */
+
+@media (max-width: 768px) {
+    .navbar-main {
+        height: 64px;
+        padding: 0 20px;
+    }
+    .navbar-actions {
+        right: 20px;
+        gap: 10px;
+    }
+    .navbar-nav {
+        gap: 24px;
+        height: 52px;
+    }
+    .navbar-link {
+        font-size: 13px;
+    }
+}
+
+
+/* ─── Phone ─── */
+
+@media (max-width: 480px) {
+    .navbar-main {
+        height: 58px;
+        padding: 0 12px;
+        justify-content: center;
+    }
+    .navbar-burger {
+        display: flex;
+        left: 12px;
+    }
+    .navbar-brand {
+        display: none;
+    }
+    .navbar-brand-mobile {
+        display: block;
+    }
+    .navbar-actions {
+        right: 12px;
+        gap: 4px;
+    }
+    .navbar-icon-btn {
+        padding: 6px;
+    }
+    .navbar-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+    }
+    .navbar-username {
+        display: none;
+    }
+    /* Dropdown: vertical stacked on phone */
+    .navbar-dropdown--open {
+        max-height: 360px;
+    }
+    .navbar-nav {
+        flex-direction: column;
+        gap: 0;
+        height: auto;
+        padding: 8px 20px 16px;
+        border-top: 1px solid var(--nav-divider);
+    }
+    .navbar-link {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 14px;
+        text-align: center;
+        border-bottom: 1px solid var(--nav-divider);
+    }
+    .navbar-link:last-child {
+        border-bottom: none;
+    }
+    .navbar-link--active::after {
+        display: none;
+    }
+    .navbar-link--active {
+        color: var(--nav-link-hover);
+    }
+}

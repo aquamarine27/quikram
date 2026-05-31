@@ -1,0 +1,43 @@
+/* ─── Home ─── */
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--page-bg);
+}
+
+.home-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.home-hero {
+  max-width: 520px;
+}
+
+.home-title {
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+}
+
+.home-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.7;
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 24px;
+  }
+  .home-desc {
+    font-size: 13px;
+  }
+}

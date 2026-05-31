@@ -9,6 +9,21 @@ const client = axios.create({
   withCredentials: true,
 });
 
+// ─── Token management ───
+let _accessToken: string | null = null;
+
+export function setAccessToken(token: string | null) {
+  _accessToken = token;
+}
+
+// ─── Request interceptor: attach Bearer token ───
+client.interceptors.request.use((config) => {
+  if (_accessToken) {
+    config.headers.Authorization = `Bearer ${_accessToken}`;
+  }
+  return config;
+});
+
 // ─── Refresh queue ───
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -49,11 +64,13 @@ client.interceptors.response.use(
           {},
           { withCredentials: true },
         );
+        setAccessToken(data.access_token);
         processQueue(null, data.access_token);
         originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
         return client(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
+        setAccessToken(null);
         localStorage.removeItem(HAS_SESSION_KEY);
         window.location.href = "/login";
         return Promise.reject(refreshError);

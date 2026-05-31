@@ -1,0 +1,223 @@
+/* ─── Settings Modal ─── */
+.settings-modal {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 200;
+}
+
+.settings-modal-card {
+  background: var(--card-bg);
+  border: 1px solid var(--social-border);
+  border-radius: 14px;
+  box-shadow: var(--toast-shadow);
+  min-width: 200px;
+  animation: modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top right;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.92) translateY(-6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.settings-modal-arrow {
+  position: absolute;
+  top: -6px;
+  right: 16px;
+  width: 10px;
+  height: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--social-border);
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(45deg);
+}
+
+.settings-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px 0 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.settings-modal-body {
+  padding: 12px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.settings-label {
+  font-size: 13px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ─── Shared close button ─── */
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.25s, background 0.25s;
+  line-height: 1;
+}
+.modal-close-btn:hover {
+  color: var(--text-primary);
+  background: rgba(128, 128, 128, 0.1);
+}
+
+/* ─── Override inline LangSwitcher inside modal ─── */
+.settings-modal .lang-switcher .lang-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.settings-modal .lang-switcher .lang-dropdown {
+  min-width: 60px;
+}
+
+/* ─── Change password fields ─── */
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cp-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.cp-input {
+  padding: 10px 14px;
+  border: 1px solid var(--social-border);
+  border-radius: 10px;
+  background: var(--field-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.25s;
+}
+.cp-input:focus { border-color: var(--link-hover); }
+
+.cp-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--link-hover);
+  text-align: center;
+}
+
+.cp-submit {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 10px;
+  background: var(--link-hover);
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+.cp-submit:hover { opacity: 0.85; }
+.cp-submit:disabled { opacity: 0.5; cursor: default; }
+
+/* ─── Change Password overlay (always centered) ─── */
+.cp-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: overlay-in 0.25s ease;
+}
+
+.cp-overlay .settings-modal-card {
+  min-width: 280px;
+  max-width: 360px;
+  width: 90%;
+  border-radius: 18px;
+  transform-origin: center;
+}
+
+.cp-overlay .settings-modal-header {
+  font-size: 15px;
+  padding: 20px 16px 0 24px;
+}
+
+.cp-overlay .settings-modal-body {
+  padding: 16px 24px 24px;
+  gap: 18px;
+}
+
+.cp-overlay .settings-label {
+  font-size: 14px;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ─── Phone: Settings/Notification → centered overlay ─── */
+@media (max-width: 480px) {
+  .settings-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .settings-modal .settings-modal-card {
+    min-width: 280px;
+    max-width: 360px;
+    width: 90%;
+    border-radius: 18px;
+    transform-origin: center;
+  }
+
+  .settings-modal-arrow {
+    display: none;
+  }
+
+  .settings-modal-header {
+    font-size: 15px;
+    padding: 20px 16px 0 24px;
+  }
+
+  .settings-modal-body {
+    padding: 16px 24px 24px;
+    gap: 18px;
+  }
+
+  .settings-label {
+    font-size: 14px;
+  }
+}

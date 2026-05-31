@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { login as apiLogin, refresh as apiRefresh, logout as apiLogout, HAS_SESSION_KEY } from "../api/auth";
 import type { LoginData } from "../api/auth";
+import { setAccessToken as setClientToken } from "../api/client";
 
 // ─── Types ───
 interface User {
@@ -8,6 +9,10 @@ interface User {
   email: string;
   name: string;
   plan: string;
+  uploads_this_month: number;
+  uploads_reset_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 interface AuthContextType {
@@ -40,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data } = await apiRefresh();
         setUser(data.user);
         setAccessToken(data.access_token);
+        setClientToken(data.access_token);
       } catch {
         setUser(null);
         setAccessToken(null);
@@ -55,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: res } = await apiLogin(data);
     setUser(res.user);
     setAccessToken(res.access_token);
+    setClientToken(res.access_token);
     localStorage.setItem(HAS_SESSION_KEY, "true");
   }, []);
 
@@ -64,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setUser(null);
       setAccessToken(null);
+      setClientToken(null);
       localStorage.removeItem(HAS_SESSION_KEY);
     }
   }, []);

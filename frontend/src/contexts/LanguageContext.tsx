@@ -6,7 +6,7 @@ const LANG_KEY = "quikram_lang";
 interface LangContextType {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string>) => string;
 }
 
 export const LangContext = createContext<LangContextType | null>(null);
@@ -28,7 +28,15 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const setLang = useCallback((l: Lang) => setLangState(l), []);
 
   const t = useCallback(
-    (key: string): string => translations[lang]?.[key] ?? key,
+    (key: string, params?: Record<string, string>): string => {
+      let val = translations[lang]?.[key] ?? key;
+      if (params) {
+        for (const [k, v] of Object.entries(params)) {
+          val = val.replace(`{${k}}`, v);
+        }
+      }
+      return val;
+    },
     [lang],
   );
 

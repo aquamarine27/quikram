@@ -7,10 +7,11 @@
     rgba(0,0,0,0.18) 56%,
     transparent 66%, transparent 100%
   );
-  --page-bg: #000;
+  --page-bg: #f5f5f5;
+  --auth-bg: #000;
   --card-bg: #fff;
-  --card-shadow: 0 8px 40px rgba(255, 255, 255, 0.06);
-  --card-shadow-expanded: 0 24px 64px rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+  --card-shadow-expanded: 0 24px 64px rgba(0, 0, 0, 0.1);
   --text-primary: #000;
   --text-secondary: #6b7280;
   --text-muted: #9ca3af;
@@ -38,6 +39,31 @@
   --toast-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   --toast-bar-bg: rgba(255, 255, 255, 0.12);
   --avatar-shadow: none;
+
+  --nav-bg: #fff;
+  --nav-text: #000;
+  --nav-icon: #71717a;
+  --nav-link: rgba(0, 0, 0, 0.7);
+  --nav-link-hover: #000;
+  --nav-divider: rgba(0, 0, 0, 0.06);
+  --nav-avatar-bg: #f4f4f5;
+  --nav-avatar-text: #000;
+  --nav-username: #ef4444;
+
+  --footer-bg: #fff;
+  --footer-title: #000;
+  --footer-subtitle: #71717a;
+  --footer-btn-bg: #f4f4f5;
+  --footer-btn-hover: #e4e4e7;
+  --footer-btn-text: #000;
+  --footer-divider: rgba(0, 0, 0, 0.06);
+  --footer-social-bg: #f4f4f5;
+  --footer-social-hover: #e4e4e7;
+  --footer-social-icon: #71717a;
+  --footer-social-icon-hover: #000;
+  --footer-logo-border: #d4d4d8;
+  --footer-logo-text: #a1a1aa;
+  --footer-copy: #a1a1aa;
 }
 
 /* ─── Dark theme ─── */
@@ -49,7 +75,8 @@
     rgba(244,244,245,0.18) 56%,
     transparent 66%, transparent 100%
   );
-  --page-bg: #111118;
+  --page-bg: #000;
+  --auth-bg: #000;
   --card-bg: #1c1c24;
   --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
   --card-shadow-expanded: 0 24px 64px rgba(0, 0, 0, 0.6);
@@ -80,4 +107,29 @@
   --toast-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   --toast-bar-bg: rgba(255, 255, 255, 0.15);
   --avatar-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+
+  --nav-bg: #000;
+  --nav-text: #fff;
+  --nav-icon: #a1a1aa;
+  --nav-link: rgba(255, 255, 255, 0.7);
+  --nav-link-hover: #fff;
+  --nav-divider: rgba(255, 255, 255, 0.06);
+  --nav-avatar-bg: #27272a;
+  --nav-avatar-text: #f4f4f5;
+  --nav-username: #ef4444;
+
+  --footer-bg: #000;
+  --footer-title: #fff;
+  --footer-subtitle: #71717a;
+  --footer-btn-bg: #18181b;
+  --footer-btn-hover: #27272a;
+  --footer-btn-text: #fff;
+  --footer-divider: rgba(255, 255, 255, 0.06);
+  --footer-social-bg: #18181b;
+  --footer-social-hover: #27272a;
+  --footer-social-icon: #a1a1aa;
+  --footer-social-icon-hover: #fff;
+  --footer-logo-border: #3f3f46;
+  --footer-logo-text: #52525b;
+  --footer-copy: #52525b;
 }

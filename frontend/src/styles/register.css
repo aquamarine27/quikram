@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: var(--page-bg);
+  background: var(--auth-bg);
 }
 
 /* ─── Card ─── */
