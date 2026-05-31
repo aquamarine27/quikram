@@ -62,6 +62,9 @@ export const translations: Record<Lang, Record<string, string>> = {
 
     "about.desc": "Quikram — сервис для подготовки к экзаменам с использованием искусственного интеллекта.",
     "pricing.desc": "Выберите подходящий тариф для подготовки к экзаменам.",
+    "courses.desc": "Изучай материалы по разным предметам в удобном формате.",
+    "tests.desc": "Проверяй свои знания с помощью тестов и пробных экзаменов.",
+    "chat.desc": "Общайся с AI-помощником для быстрых ответов на вопросы.",
 
     "toast.welcomeBack": "С возвращением!",
     "toast.accountCreated": "Аккаунт создан! Войдите в систему.",
@@ -132,6 +135,9 @@ export const translations: Record<Lang, Record<string, string>> = {
 
     "about.desc": "Quikram is an exam preparation service powered by artificial intelligence.",
     "pricing.desc": "Choose a suitable plan for exam preparation.",
+    "courses.desc": "Study materials across various subjects in a convenient format.",
+    "tests.desc": "Test your knowledge with quizzes and mock exams.",
+    "chat.desc": "Chat with an AI assistant for quick answers to your questions.",
 
     "toast.welcomeBack": "Welcome back!",
     "toast.accountCreated": "Account created! Sign in to continue.",

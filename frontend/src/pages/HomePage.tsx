@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useLang } from "../contexts/LanguageContext";
 import Navbar from "../components/Navbar";
@@ -7,6 +8,7 @@ import "../styles/home.css";
 export default function HomePage() {
   const { user } = useAuth();
   const { t } = useLang();
+  useEffect(() => { document.title = `Quikram — ${t("nav.home")}`; }, [t]);
 
   return (
     <div className="home-page">

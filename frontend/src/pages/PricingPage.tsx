@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useLang } from "../contexts/LanguageContext";
@@ -5,6 +6,7 @@ import "../styles/pricing.css";
 
 export default function PricingPage() {
   const { t } = useLang();
+  useEffect(() => { document.title = `Quikram — ${t("nav.pricing")}`; }, [t]);
   return (
     <div className="pricing-page">
       <Navbar />
