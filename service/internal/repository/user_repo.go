@@ -53,6 +53,10 @@ func (r *UserRepo) UpdatePassword(id uuid.UUID, hash string) error {
 	return r.db.Model(&models.User{}).Where("id = ?", id).Update("password_hash", hash).Error
 }
 
+func (r *UserRepo) UpdatePlan(id uuid.UUID, plan string) error {
+	return r.db.Model(&models.User{}).Where("id = ?", id).Update("plan", plan).Error
+}
+
 func (r *UserRepo) IncrementUploads(id uuid.UUID) error {
 	return r.db.Model(&models.User{}).Where("id = ?", id).
 		UpdateColumn("uploads_this_month", gorm.Expr("uploads_this_month + 1")).Error

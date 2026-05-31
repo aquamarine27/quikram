@@ -61,6 +61,7 @@ func main() {
 	quizHandler := handler.NewQuizHandler(quizRepo, summaryRepo, llmProvider, subjectService)
 	attemptHandler := handler.NewAttemptHandler(attemptRepo, quizRepo)
 	analyticsHandler := handler.NewAnalyticsHandler(attemptRepo, subjectRepo)
+	planHandler := handler.NewPlanHandler()
 	chatHandler := handler.NewChatHandler(chatRepo, llmProvider)
 
 	app := fiber.New(fiber.Config{
@@ -90,6 +91,7 @@ func main() {
 	users.Get("/me", userHandler.GetMe)
 	users.Patch("/me", userHandler.UpdateMe)
 	users.Post("/me/change-password", userHandler.ChangePassword)
+	users.Post("/me/change-plan", userHandler.ChangePlan)
 
 	subjects := api.Group("/subjects", authMw)
 	subjects.Get("/", subjectHandler.List)
@@ -125,6 +127,8 @@ func main() {
 	chat.Post("/", chatHandler.Send)
 	chat.Get("/", chatHandler.History)
 	chat.Delete("/", chatHandler.Clear)
+
+	api.Get("/plans", planHandler.List)
 
 	analytics := api.Group("/analytics", authMw)
 	analytics.Get("/me", analyticsHandler.GetMe)

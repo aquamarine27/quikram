@@ -95,3 +95,42 @@ func (h *UserHandler) ChangePassword(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"message": "password changed"})
 }
+
+func (h *UserHandler) ChangePlan(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(uuid.UUID)
+
+	var req struct {
+		Plan string `json:"plan"`
+	}
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid request body"})
+	}
+
+	valid := map[string]bool{"free": true, "pro": true, "proai": true}
+	if !valid[req.Plan] {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid plan"})
+	}
+
+	if err := h.userRepo.UpdatePlan(userID, req.Plan); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "update failed"})
+	}
+
+	user, err := h.userRepo.FindByID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "user not found"})
+	}
+
+	uploadsLimit := 10
+	if user.Plan == "pro" || user.Plan == "proai" {
+		uploadsLimit = -1
+	}
+
+	return c.JSON(fiber.Map{
+		"id":                 user.ID,
+		"email":              user.Email,
+		"name":               user.Name,
+		"plan":               user.Plan,
+		"uploads_this_month": user.UploadsThisMonth,
+		"uploads_limit":      uploadsLimit,
+	})
+}

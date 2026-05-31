@@ -79,6 +79,13 @@ export async function changePassword(data: ChangePasswordData): Promise<{ data: 
   return { data: res.data };
 }
 
+// ─── POST /users/me/change-plan ───
+export async function changePlan(plan: string): Promise<LoginResponse["user"]> {
+  const { default: client } = await import("./client");
+  const res = await client.post<LoginResponse["user"]>("/users/me/change-plan", { plan });
+  return res.data;
+}
+
 // ─── GET /analytics/me ───
 export interface AnalyticsData {
   subjects_count: number;

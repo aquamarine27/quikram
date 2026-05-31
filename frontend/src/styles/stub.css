@@ -31,3 +31,25 @@
   margin: 0;
   line-height: 1.7;
 }
+
+.stub-error-msg {
+  font-size: 14px;
+  color: var(--link-hover);
+  margin: 0 0 24px;
+  line-height: 1.7;
+}
+
+.stub-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: var(--link-hover);
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+.stub-btn:hover {
+  opacity: 0.85;
+}

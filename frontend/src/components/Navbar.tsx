@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLang } from "../contexts/LanguageContext";
@@ -6,11 +6,11 @@ import SettingsModal from "./SettingsModal";
 import NotificationModal from "./NotificationModal";
 import "../styles/navbar.css";
 
-const navItems = [
+const allNavItems = [
   { key: "nav.home", path: "/home" },
   { key: "nav.courses", path: "/courses" },
   { key: "nav.tests", path: "/tests" },
-  { key: "nav.chat", path: "/chat" },
+  { key: "nav.chat", path: "/chat", requiredPlan: "proai" as const },
   { key: "nav.pricing", path: "/pricing" },
   { key: "nav.about", path: "/about" },
 ];
@@ -22,6 +22,11 @@ export default function Navbar() {
   const { user } = useAuth();
   const { t } = useLang();
   const location = useLocation();
+
+  const navItems = useMemo(
+    () => allNavItems.filter((item) => !item.requiredPlan || user?.plan === "proai"),
+    [user?.plan],
+  );
 
   const activeItem = navItems.find((i) => location.pathname === i.path);
 

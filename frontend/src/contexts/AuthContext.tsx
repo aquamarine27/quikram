@@ -22,6 +22,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (data: LoginData) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (u: User) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -76,9 +77,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const updateUser = useCallback((u: User) => { setUser(u); }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, accessToken, isAuthenticated: !!user, isLoading, login, logout }}
+      value={{ user, accessToken, isAuthenticated: !!user, isLoading, login, logout, updateUser }}
     >
       {children}
     </AuthContext.Provider>
