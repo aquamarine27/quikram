@@ -25,7 +25,7 @@ func (h *UserHandler) GetMe(c *fiber.Ctx) error {
 	}
 
 	uploadsLimit := 10
-	if user.Plan == "pro" {
+	if user.Plan == "pro" || user.Plan == "proai" {
 		uploadsLimit = -1
 	}
 
@@ -120,17 +120,5 @@ func (h *UserHandler) ChangePlan(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "user not found"})
 	}
 
-	uploadsLimit := 10
-	if user.Plan == "pro" || user.Plan == "proai" {
-		uploadsLimit = -1
-	}
-
-	return c.JSON(fiber.Map{
-		"id":                 user.ID,
-		"email":              user.Email,
-		"name":               user.Name,
-		"plan":               user.Plan,
-		"uploads_this_month": user.UploadsThisMonth,
-		"uploads_limit":      uploadsLimit,
-	})
+	return c.JSON(user)
 }

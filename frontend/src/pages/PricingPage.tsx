@@ -8,18 +8,23 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/pricing.css";
 
-const featureRows: { key: string; featureKey: keyof Plan["features"] }[] = [
-  { key: "pricing.subjects", featureKey: "subjects" },
-  { key: "pricing.uploads", featureKey: "uploads_per_month" },
-  { key: "pricing.aiSummary", featureKey: "ai_summary" },
-  { key: "pricing.compression", featureKey: "compression" },
-  { key: "pricing.basicTests", featureKey: "basic_tests" },
-  { key: "pricing.advancedTests", featureKey: "advanced_tests" },
-  { key: "pricing.difficulty", featureKey: "difficulty" },
-  { key: "pricing.analytics", featureKey: "analytics" },
-  { key: "pricing.weakSpots", featureKey: "weak_spots" },
-  { key: "pricing.export", featureKey: "export" },
-  { key: "pricing.aiChat", featureKey: "ai_chat" },
+type CompRow =
+  | { key: string; type: "feature"; featureKey: keyof Plan["features"] }
+  | { key: string; type: "price" };
+
+const compRows: CompRow[] = [
+  { key: "pricing.subjects", type: "feature", featureKey: "subjects" },
+  { key: "pricing.uploads", type: "feature", featureKey: "uploads_per_month" },
+  { key: "pricing.aiSummary", type: "feature", featureKey: "ai_summary" },
+  { key: "pricing.compression", type: "feature", featureKey: "compression" },
+  { key: "pricing.basicTests", type: "feature", featureKey: "basic_tests" },
+  { key: "pricing.advancedTests", type: "feature", featureKey: "advanced_tests" },
+  { key: "pricing.difficulty", type: "feature", featureKey: "difficulty" },
+  { key: "pricing.analytics", type: "feature", featureKey: "analytics" },
+  { key: "pricing.weakSpots", type: "feature", featureKey: "weak_spots" },
+  { key: "pricing.export", type: "feature", featureKey: "export" },
+  { key: "pricing.aiChat", type: "feature", featureKey: "ai_chat" },
+  { key: "pricing.price", type: "price" },
 ];
 
 const cardFeatureKeys: { key: string; featureKey: keyof Plan["features"] }[] = [
@@ -33,12 +38,9 @@ const cardFeatureKeys: { key: string; featureKey: keyof Plan["features"] }[] = [
   { key: "pricing.aiChat", featureKey: "ai_chat" },
 ];
 
-function fmtFeature(key: string, plan: Plan, t: (k: string, p?: any) => string): string {
-  const val = plan.features[featureRows.find((r) => r.key === key)!.featureKey];
+function fmtFeature(val: number | boolean, t: (k: string, p?: any) => string): string {
   if (typeof val === "number") {
-    if (val === -1) return t("pricing.unlimited");
-    if (key === "pricing.uploads" && val === 15) return "15";
-    return String(val);
+    return val === -1 ? t("pricing.unlimited") : String(val);
   }
   return val ? t("pricing.yes") : t("pricing.no");
 }
@@ -47,6 +49,11 @@ function cardFeatureIncluded(featureKey: keyof Plan["features"], plan: Plan): bo
   const val = plan.features[featureKey];
   return typeof val === "number" ? val !== 0 : val;
 }
+
+const badgeKey: Record<string, string> = {
+  popular: "pricing.proBadge",
+  ai_chat: "pricing.proaiBadge",
+};
 
 function useButton(
   plan: Plan, isAuth: boolean, currentPlan: string | null, t: (k: string, p?: any) => string,
@@ -120,11 +127,6 @@ export default function PricingPage() {
                   isCurrent && plan.id === "free" ? "pricing-btn--current-free" : "",
                 ].filter(Boolean).join(" ");
 
-                const badgeKey: Record<string, string> = {
-                  popular: "pricing.proBadge",
-                  ai_chat: "pricing.proaiBadge",
-                };
-
                 return (
                   <div key={plan.id} className={cardClasses}>
                     {plan.badge && <span className="pricing-badge">{t(badgeKey[plan.badge] || plan.badge)}</span>}
@@ -181,14 +183,21 @@ export default function PricingPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {featureRows.map((row) => (
+                    {compRows.map((row) => (
                       <tr key={row.key}>
                         <td className="pricing-td-label">{t(row.key)}</td>
                         {plans.map((p) => {
                           const isCurrent = isAuthenticated && user?.plan === p.id;
+                          let val: string;
+                          if (row.type === "price") {
+                            val = p.price === 0 ? t("pricing.forever") : `${p.price / 100} ₽`;
+                          } else {
+                            const fv = p.features[row.featureKey];
+                            val = fmtFeature(fv, t);
+                          }
                           return (
                             <td key={p.id} className={`pricing-td-val${isCurrent ? " col-highlighted" : ""}`}>
-                              {fmtFeature(row.key, p, t)}
+                              {val}
                             </td>
                           );
                         })}

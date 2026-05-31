@@ -85,6 +85,8 @@ func main() {
 	auth.Post("/refresh", authHandler.Refresh)
 	auth.Post("/logout", authHandler.Logout)
 
+	api.Get("/plans", planHandler.List)
+
 	authMw := middleware.AuthRequired(cfg.JWTSecret)
 
 	users := api.Group("/users", authMw)
@@ -127,8 +129,6 @@ func main() {
 	chat.Post("/", chatHandler.Send)
 	chat.Get("/", chatHandler.History)
 	chat.Delete("/", chatHandler.Clear)
-
-	api.Get("/plans", planHandler.List)
 
 	analytics := api.Group("/analytics", authMw)
 	analytics.Get("/me", analyticsHandler.GetMe)

@@ -51,7 +51,7 @@ export default function ProfilePage() {
     month: "long",
     year: "numeric",
   });
-  const uploadsLimit = user.plan === "pro" ? -1 : 10;
+  const uploadsLimit = user.plan === "pro" || user.plan === "proai" ? -1 : 10;
   const uploadPercent =
     uploadsLimit === -1
       ? 0
