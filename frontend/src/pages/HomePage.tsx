@@ -4,9 +4,9 @@ import { useParallax } from "../hooks/useParallax";
 import { useSmoothSnap } from "../hooks/useSmoothSnap";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { getReviews, type Review } from "../api/reviews";
 import "../styles/home.css";
 
-const REVIEW_COUNT = 12;
 const SLIDE_MS = 3000;
 const PAUSE_MS = 6000;
 const CYCLE_MS = SLIDE_MS + PAUSE_MS;
@@ -17,17 +17,8 @@ function layoutForWidth(w: number) {
   return { gap: 20, visible: 3 };
 }
 
-function buildReviews(t: (k: string) => string) {
-  return Array.from({ length: REVIEW_COUNT }, (_, i) => ({
-    text: t(`home.review${i + 1}.text`),
-    name: t(`home.review${i + 1}.name`),
-    author: t(`home.review${i + 1}.author`),
-    badge: ["#8b5cf6", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#ec4899"][i % 6],
-  }));
-}
-
 export default function HomePage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   useEffect(() => { document.title = `Quikram — ${t("nav.home")}`; }, [t]);
 
   const snapRef = useSmoothSnap();
@@ -39,6 +30,7 @@ export default function HomePage() {
   const stackFrontParallax = useParallax(0.08, 10);
   const reviewsParallax = useParallax(0.06, 15);
 
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const [gap, setGap] = useState(20);
@@ -49,10 +41,21 @@ export default function HomePage() {
   dirRef.current = direction;
   const prevVisibleRef = useRef(visibleCount);
   prevVisibleRef.current = visibleCount;
+  const progressMsRef = useRef(0);
   const resizeRef = useRef<number>();
 
-  const batchCount = Math.ceil(REVIEW_COUNT / visibleCount);
-  const progressMs = batchCount * CYCLE_MS;
+  const reviewCount = reviews.length;
+  const batchCount = Math.ceil(reviewCount / visibleCount) || 1;
+  progressMsRef.current = batchCount * CYCLE_MS;
+
+  useEffect(() => {
+    getReviews(lang).then((data) => {
+      setReviews(data);
+      setCurrent(0);
+      setDirection(1);
+      phaseStartRef.current = Date.now();
+    });
+  }, [lang]);
 
   useEffect(() => {
     const onResize = () => {
@@ -75,9 +78,8 @@ export default function HomePage() {
     };
   }, []);
 
-  const reviews = buildReviews(t);
-
   useEffect(() => {
+    if (reviewCount === 0) return;
     const timer = setTimeout(() => {
       let next = current + direction * visibleCount;
       let newDir = direction;
@@ -86,9 +88,9 @@ export default function HomePage() {
         newDir = 1;
         next = visibleCount;
         phaseStartRef.current = Date.now();
-      } else if (next + visibleCount > REVIEW_COUNT) {
+      } else if (next + visibleCount > reviewCount) {
         newDir = -1;
-        next = REVIEW_COUNT - visibleCount - visibleCount;
+        next = reviewCount - visibleCount - visibleCount;
         phaseStartRef.current = Date.now();
       }
 
@@ -96,14 +98,15 @@ export default function HomePage() {
       setCurrent(next);
     }, CYCLE_MS);
     return () => clearTimeout(timer);
-  }, [current, direction, visibleCount]);
+  }, [current, direction, visibleCount, reviewCount]);
 
   useEffect(() => {
     let raf: number;
     const tick = () => {
       const dir = dirRef.current;
       const phaseElapsed = Date.now() - phaseStartRef.current;
-      const pct = Math.min(phaseElapsed / progressMs, 1) * 100;
+      const total = progressMsRef.current;
+      const pct = total > 0 ? Math.min(phaseElapsed / total, 1) * 100 : 0;
       const display = dir === 1 ? pct : 100 - pct;
 
       if (progressFillRef.current) {

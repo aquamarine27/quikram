@@ -63,6 +63,7 @@ func main() {
 	analyticsHandler := handler.NewAnalyticsHandler(attemptRepo, subjectRepo)
 	planHandler := handler.NewPlanHandler()
 	chatHandler := handler.NewChatHandler(chatRepo, llmProvider)
+	reviewHandler := handler.NewReviewHandler()
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -79,22 +80,28 @@ func main() {
 
 	api := app.Group("/api/v1")
 
+	// Auth (public)
 	auth := api.Group("/auth")
 	auth.Post("/register", authHandler.Register)
 	auth.Post("/login", authHandler.Login)
 	auth.Post("/refresh", authHandler.Refresh)
 	auth.Post("/logout", authHandler.Logout)
 
+	// Public info
 	api.Get("/plans", planHandler.List)
+	api.Get("/reviews", reviewHandler.List)
 
+	// All routes below require auth
 	authMw := middleware.AuthRequired(cfg.JWTSecret)
 
+	// User profile
 	users := api.Group("/users", authMw)
 	users.Get("/me", userHandler.GetMe)
 	users.Patch("/me", userHandler.UpdateMe)
 	users.Post("/me/change-password", userHandler.ChangePassword)
 	users.Post("/me/change-plan", userHandler.ChangePlan)
 
+	// Subjects CRUD
 	subjects := api.Group("/subjects", authMw)
 	subjects.Get("/", subjectHandler.List)
 	subjects.Post("/", subjectHandler.Create)
@@ -102,34 +109,40 @@ func main() {
 	subjects.Patch("/:id", subjectHandler.Update)
 	subjects.Delete("/:id", subjectHandler.Delete)
 
+	// Documents within a subject
 	documents := api.Group("/subjects/:subjectId/documents", authMw)
 	documents.Post("/", documentHandler.Upload)
 	documents.Get("/", documentHandler.List)
 	documents.Get("/:id", documentHandler.GetByID)
 	documents.Delete("/:id", documentHandler.Delete)
 
+	// AI-generated summaries
 	summaries := api.Group("/subjects/:subjectId/summaries", authMw)
 	summaries.Get("/", summaryHandler.List)
 	summaries.Get("/:id", summaryHandler.GetByID)
 	summaries.Post("/:id/regenerate", summaryHandler.Regenerate)
 
+	// Quiz generation & listing
 	quizzes := api.Group("/subjects/:subjectId/quizzes", authMw)
 	quizzes.Post("/", quizHandler.Create)
 	quizzes.Get("/", quizHandler.List)
 	quizzes.Get("/:id", quizHandler.GetByID)
 	quizzes.Delete("/:id", quizHandler.Delete)
 
+	// Quiz attempts & history
 	attempts := api.Group("/quizzes/:quizId/attempts", authMw)
 	attempts.Post("/", attemptHandler.Start)
 	attempts.Post("/:id/submit", attemptHandler.Submit)
 	attempts.Get("/", attemptHandler.History)
 	attempts.Get("/:id", attemptHandler.GetByID)
 
+	// AI chat (ProAI only)
 	chat := api.Group("/chat", authMw)
 	chat.Post("/", chatHandler.Send)
 	chat.Get("/", chatHandler.History)
 	chat.Delete("/", chatHandler.Clear)
 
+	// User analytics
 	analytics := api.Group("/analytics", authMw)
 	analytics.Get("/me", analyticsHandler.GetMe)
 	analytics.Get("/subjects/:id", analyticsHandler.GetBySubject)
