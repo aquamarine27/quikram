@@ -131,6 +131,7 @@
   font-weight: 400;
   color: var(--text-primary);
   line-height: 1;
+  user-select: none;
 }
 
 .profile-stat-label {

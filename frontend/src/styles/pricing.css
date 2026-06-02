@@ -99,6 +99,7 @@
   border-radius: 999px;
   white-space: nowrap;
   letter-spacing: 0.3px;
+  user-select: none;
 }
 
 /* ─── Header ─── */
@@ -120,6 +121,7 @@
   color: var(--text-primary);
   line-height: 1;
   margin-bottom: 4px;
+  user-select: none;
 }
 
 .pricing-card-period {
@@ -154,6 +156,7 @@
   width: 18px;
   text-align: center;
   font-size: 14px;
+  user-select: none;
 }
 
 /* ─── Button ─── */

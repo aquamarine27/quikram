@@ -67,6 +67,10 @@
 }
 
 /* ─── Dark theme ─── */
+[data-theme="dark"] [class$="-page"]:not(.login-page):not(.register-page) {
+  background-image: var(--page-glow);
+}
+
 [data-theme="dark"] {
   --btn-gradient: linear-gradient(135deg,
     #f4f4f5 0%, #f4f4f5 28%,
@@ -75,7 +79,8 @@
     rgba(244,244,245,0.18) 56%,
     transparent 66%, transparent 100%
   );
-  --page-bg: #000;
+  --page-bg: #07070d;
+  --page-glow: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 60%);
   --auth-bg: #000;
   --card-bg: #1c1c24;
   --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
