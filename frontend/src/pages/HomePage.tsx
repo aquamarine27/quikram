@@ -49,12 +49,7 @@ export default function HomePage() {
   progressMsRef.current = batchCount * CYCLE_MS;
 
   useEffect(() => {
-    getReviews(lang).then((data) => {
-      setReviews(data);
-      setCurrent(0);
-      setDirection(1);
-      phaseStartRef.current = Date.now();
-    });
+    getReviews(lang).then((data) => setReviews(data));
   }, [lang]);
 
   useEffect(() => {
