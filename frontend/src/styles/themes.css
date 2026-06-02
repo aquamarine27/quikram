@@ -64,6 +64,26 @@
   --footer-logo-border: #d4d4d8;
   --footer-logo-text: #a1a1aa;
   --footer-copy: #a1a1aa;
+
+  --home-hero-bg: #fff;
+  --home-hero-text: #000;
+  --home-hero-sub: #6b7280;
+  --home-why-bg: #f5f5f5;
+  --home-why-text: #000;
+  --home-why-sub: #6b7280;
+  --home-reviews-bg: #fff;
+  --home-reviews-text: #000;
+  --home-feature-bg: #f3f4f6;
+  --home-feature-border: #e5e7eb;
+  --home-feature-hover: #e5e7eb;
+  --home-card-bg: #fff;
+  --home-card-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+  --home-review-text: #6b7280;
+  --home-dot-grid: rgba(0, 0, 0, 0.05);
+  --orb-1: rgba(34, 197, 94, 0.04);
+  --orb-2: rgba(139, 92, 246, 0.03);
+  --orb-3: rgba(59, 130, 246, 0.04);
+  --orb-4: rgba(239, 68, 68, 0.02);
 }
 
 /* ─── Dark theme ─── */
@@ -137,4 +157,24 @@
   --footer-logo-border: #3f3f46;
   --footer-logo-text: #52525b;
   --footer-copy: #52525b;
+
+  --home-hero-bg: #000;
+  --home-hero-text: #fff;
+  --home-hero-sub: #a1a1aa;
+  --home-why-bg: #0a0a12;
+  --home-why-text: #f4f4f5;
+  --home-why-sub: #a1a1aa;
+  --home-reviews-bg: #000;
+  --home-reviews-text: #fff;
+  --home-feature-bg: rgba(139, 92, 246, 0.08);
+  --home-feature-border: rgba(139, 92, 246, 0.15);
+  --home-feature-hover: rgba(139, 92, 246, 0.15);
+  --home-card-bg: #14141e;
+  --home-card-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --home-review-text: #a1a1aa;
+  --home-dot-grid: rgba(255, 255, 255, 0.04);
+  --orb-1: rgba(34, 197, 94, 0.12);
+  --orb-2: rgba(139, 92, 246, 0.1);
+  --orb-3: rgba(59, 130, 246, 0.1);
+  --orb-4: rgba(239, 68, 68, 0.06);
 }
