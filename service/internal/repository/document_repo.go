@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -46,7 +47,7 @@ func (r *DocumentRepo) UpdateStatus(id uuid.UUID, status string) error {
 
 func (r *DocumentRepo) UpdateExtractedText(id uuid.UUID, text string) error {
 	return r.db.Model(&models.Document{}).Where("id = ?", id).Updates(map[string]any{
-		"extracted_text": text,
+		"extracted_text": strings.ReplaceAll(text, "\x00", ""),
 		"status":         "ready",
 	}).Error
 }

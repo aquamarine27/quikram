@@ -102,7 +102,7 @@ func (h *AuthHandler) Logout(c *fiber.Ctx) error {
 }
 
 func (h *AuthHandler) setRefreshCookie(c *fiber.Ctx, token string) {
-	secure := h.cfg.Env == "production"
+	secure := c.Get("X-Forwarded-Proto") == "https"
 	c.Cookie(&fiber.Cookie{
 		Name:     cookieName,
 		Value:    token,
@@ -110,7 +110,7 @@ func (h *AuthHandler) setRefreshCookie(c *fiber.Ctx, token string) {
 		Expires:  time.Now().Add(h.cfg.JWTRefreshExpire),
 		HTTPOnly: true,
 		Secure:   secure,
-		SameSite: "Strict",
+		SameSite: "Lax",
 	})
 }
 
