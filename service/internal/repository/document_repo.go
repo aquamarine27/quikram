@@ -45,8 +45,10 @@ func (r *DocumentRepo) UpdateStatus(id uuid.UUID, status string) error {
 }
 
 func (r *DocumentRepo) UpdateExtractedText(id uuid.UUID, text string) error {
-	return r.db.Model(&models.Document{}).Where("id = ?", id).
-		Updates(map[string]interface{}{"extracted_text": text, "status": "ready"}).Error
+	return r.db.Model(&models.Document{}).Where("id = ?", id).Updates(map[string]any{
+		"extracted_text": text,
+		"status":         "ready",
+	}).Error
 }
 
 func (r *DocumentRepo) Delete(id uuid.UUID) error {

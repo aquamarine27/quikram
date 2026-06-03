@@ -62,7 +62,7 @@ func (h *QuizHandler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "summary not found"})
 	}
 
-	questions, err := h.ai.GenerateQuiz(summary.Content, req.QuestionsCount, req.Difficulty)
+	questions, err := h.ai.GenerateQuiz(summary.ContentMedium, req.QuestionsCount, req.Difficulty)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to generate quiz"})
 	}

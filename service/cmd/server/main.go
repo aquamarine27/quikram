@@ -42,9 +42,30 @@ func main() {
 	tokenRepo := repository.NewTokenRepo(database)
 	chatRepo := repository.NewChatRepo(database)
 
-	llmProvider := ai.NewPlaceholderProvider()
+	var llmProvider ai.LLMProvider
+	if cfg.OpenAIKey != "" {
+		llmProvider = ai.NewOpenAIProvider(cfg.OpenAIKey, cfg.LLMEndpoint, cfg.LLMModel)
+		modelName := cfg.LLMModel
+		if modelName == "" {
+			modelName = "auto"
+		}
+		log.Printf("using LLM: %s (%s) model: %s", cfg.LLMProvider, cfg.LLMEndpoint, modelName)
+	} else {
+		llmProvider = ai.NewPlaceholderProvider()
+		log.Println("no API key set — using placeholder LLM provider")
+	}
 
-	fileStorage := storage.NewLocalStorage("./uploads")
+	var fileStorage storage.FileStorage
+	if cfg.S3Endpoint != "" {
+		fileStorage = storage.NewS3Storage(
+			cfg.S3Endpoint, cfg.S3AccessKey, cfg.S3SecretKey,
+			cfg.S3Bucket, cfg.S3Region,
+		)
+		log.Printf("using S3 storage: %s/%s", cfg.S3Endpoint, cfg.S3Bucket)
+	} else {
+		fileStorage = storage.NewLocalStorage("./uploads")
+		log.Println("using local storage: ./uploads")
+	}
 
 	workerPool := worker.NewWorker(documentRepo, summaryRepo, llmProvider, fileStorage)
 	stopCron := make(chan struct{})
@@ -56,8 +77,8 @@ func main() {
 	authHandler := handler.NewAuthHandler(authService, cfg)
 	userHandler := handler.NewUserHandler(userRepo)
 	subjectHandler := handler.NewSubjectHandler(subjectService)
-	documentHandler := handler.NewDocumentHandler(documentRepo, subjectService, fileStorage, workerPool)
-	summaryHandler := handler.NewSummaryHandler(summaryRepo, subjectService)
+	documentHandler := handler.NewDocumentHandler(documentRepo, subjectService, userRepo, fileStorage, workerPool)
+	summaryHandler := handler.NewSummaryHandler(summaryRepo, subjectService, userRepo, documentRepo, workerPool)
 	quizHandler := handler.NewQuizHandler(quizRepo, summaryRepo, llmProvider, subjectService)
 	attemptHandler := handler.NewAttemptHandler(attemptRepo, quizRepo)
 	analyticsHandler := handler.NewAnalyticsHandler(attemptRepo, subjectRepo)
@@ -66,6 +87,7 @@ func main() {
 	reviewHandler := handler.NewReviewHandler()
 
 	app := fiber.New(fiber.Config{
+		BodyLimit: 22 * 1024 * 1024,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": "internal error",
@@ -116,7 +138,11 @@ func main() {
 	documents.Get("/:id", documentHandler.GetByID)
 	documents.Delete("/:id", documentHandler.Delete)
 
-	// AI-generated summaries
+	// Summary per document (create / get by doc)
+	documents.Get("/:docId/summary", summaryHandler.GetByDocument)
+	documents.Post("/:docId/summary", summaryHandler.Create)
+
+	// AI-generated summaries by subject
 	summaries := api.Group("/subjects/:subjectId/summaries", authMw)
 	summaries.Get("/", summaryHandler.List)
 	summaries.Get("/:id", summaryHandler.GetByID)

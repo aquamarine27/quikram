@@ -13,21 +13,17 @@ func NewPlaceholderProvider() *PlaceholderProvider {
 	return &PlaceholderProvider{}
 }
 
-func (p *PlaceholderProvider) GenerateSummary(text, compressionLevel string) (string, error) {
-	prefix := ""
-	switch compressionLevel {
+func (p *PlaceholderProvider) GenerateSummary(text, level string) (string, error) {
+	info := fmt.Sprintf("Файл содержит %d символов", len(text))
+	switch level {
 	case "short":
-		prefix = "## Краткий конспект (short)\n\n"
+		return "Короткий конспект\n\nЭто placeholder. Подключи API-ключ для генерации.\n" + info, nil
 	case "medium":
-		prefix = "## Конспект (medium)\n\n"
-	case "detailed":
-		prefix = "## Подробный конспект (detailed)\n\n"
+		return "Средний конспект\n\nЭто placeholder-конспект. Текст будет генерироваться ИИ после подключения API.\n\nОсновные темы\nОписание темы 1\nОписание темы 2\nОписание темы 3\n\n" + info, nil
+	case "long":
+		return "Длинный конспект\n\nЭто placeholder-конспект. Текст будет генерироваться ИИ после подключения API.\n\nОсновные темы\nОписание темы 1 с деталями\nОписание темы 2 с деталями\nОписание темы 3 с деталями\n\nКлючевые определения\nТермин\n" + info, nil
 	}
-
-	return prefix + "Это placeholder-конспект. Текст будет генерироваться ИИ после подключения API.\n\n" +
-		"### Основные темы:\n- Тема 1: описание\n- Тема 2: описание\n- Тема 3: описание\n\n" +
-		"### Ключевые определения:\n- **Определение 1**: значение\n- **Определение 2**: значение\n\n" +
-		"_Файл содержит " + fmt.Sprintf("%d", len(text)/10) + " символов входного текста._\n", nil
+	return "", fmt.Errorf("unknown level: %s", level)
 }
 
 func (p *PlaceholderProvider) GenerateQuiz(summaryText string, count int, difficulty string) ([]models.Question, error) {

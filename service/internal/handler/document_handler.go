@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"time"
 
@@ -19,14 +20,16 @@ import (
 type DocumentHandler struct {
 	docRepo        *repository.DocumentRepo
 	subjectService *service.SubjectService
+	userRepo       *repository.UserRepo
 	storage        storage.FileStorage
 	worker         *worker.Worker
 }
 
-func NewDocumentHandler(docRepo *repository.DocumentRepo, subjectService *service.SubjectService, storage storage.FileStorage, worker *worker.Worker) *DocumentHandler {
+func NewDocumentHandler(docRepo *repository.DocumentRepo, subjectService *service.SubjectService, userRepo *repository.UserRepo, storage storage.FileStorage, worker *worker.Worker) *DocumentHandler {
 	return &DocumentHandler{
 		docRepo:        docRepo,
 		subjectService: subjectService,
+		userRepo:       userRepo,
 		storage:        storage,
 		worker:         worker,
 	}
@@ -41,6 +44,17 @@ func (h *DocumentHandler) Upload(c *fiber.Ctx) error {
 
 	if _, err := h.subjectService.GetByID(subjectID, userID); err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "subject not found"})
+	}
+
+	user, err := h.userRepo.FindByID(userID)
+	if err != nil || user == nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "user not found"})
+	}
+
+	if user.Plan == "free" && user.UploadsThisMonth >= 15 {
+		return c.Status(fiber.StatusPaymentRequired).JSON(fiber.Map{
+			"error": "Free plan limit reached: max 15 uploads per month. Upgrade to Pro or ProAI for unlimited uploads.",
+		})
 	}
 
 	file, err := c.FormFile("file")
@@ -84,6 +98,10 @@ func (h *DocumentHandler) Upload(c *fiber.Ctx) error {
 
 	if err := h.docRepo.Create(doc); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to save document"})
+	}
+
+	if err := h.userRepo.IncrementUploads(userID); err != nil {
+		log.Printf("failed to increment uploads for user %s: %v", userID, err)
 	}
 
 	go h.worker.ProcessDocument(doc.ID)

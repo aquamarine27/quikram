@@ -35,8 +35,6 @@ func (w *Worker) ProcessDocument(documentID uuid.UUID) {
 		return
 	}
 
-	w.docRepo.UpdateStatus(doc.ID, "processing")
-
 	reader, err := w.storage.Download(doc.FileKey)
 	if err != nil {
 		log.Printf("worker: failed to download %s: %v", doc.FileKey, err)
@@ -57,27 +55,52 @@ func (w *Worker) ProcessDocument(documentID uuid.UUID) {
 		return
 	}
 
-	summary, err := w.ai.GenerateSummary(content, "medium")
+	// Find or create summary record before AI calls
+	s, err := w.summaryRepo.FindByDocumentID(doc.ID)
 	if err != nil {
-		log.Printf("worker: failed to generate summary %s: %v", doc.ID, err)
-		w.docRepo.UpdateStatus(doc.ID, "error")
+		log.Printf("worker: failed to check summary %s: %v", doc.ID, err)
 		return
 	}
-
-	s := &models.Summary{
-		DocumentID:       doc.ID,
-		SubjectID:        doc.SubjectID,
-		UserID:           doc.UserID,
-		Content:          summary,
-		CompressionLevel: "medium",
+	if s == nil {
+		s = &models.Summary{
+			DocumentID: doc.ID,
+			SubjectID:  doc.SubjectID,
+			UserID:     doc.UserID,
+		}
+		if err := w.summaryRepo.Create(s); err != nil {
+			log.Printf("worker: failed to create summary %s: %v", doc.ID, err)
+			return
+		}
 	}
-	if err := w.summaryRepo.Create(s); err != nil {
-		log.Printf("worker: failed to save summary %s: %v", doc.ID, err)
-		return
+
+	// Short — fastest, save immediately
+	short, err := w.ai.GenerateSummary(content, "short")
+	if err != nil {
+		log.Printf("worker: short summary failed %s: %v", doc.ID, err)
+	} else {
+		w.summaryRepo.UpdateContentField(s.ID, "content_short", short)
+		log.Printf("worker: short summary saved for %s (%d chars)", doc.ID, len(short))
 	}
 
-	w.docRepo.UpdateStatus(doc.ID, "ready")
-	log.Printf("worker: document %s processed successfully", doc.ID)
+	// Medium — save after short is available
+	medium, err := w.ai.GenerateSummary(content, "medium")
+	if err != nil {
+		log.Printf("worker: medium summary failed %s: %v", doc.ID, err)
+	} else {
+		w.summaryRepo.UpdateContentField(s.ID, "content_medium", medium)
+		log.Printf("worker: medium summary saved for %s (%d chars)", doc.ID, len(medium))
+	}
+
+	// Long — save after medium is available
+	long, err := w.ai.GenerateSummary(content, "long")
+	if err != nil {
+		log.Printf("worker: long summary failed %s: %v", doc.ID, err)
+	} else {
+		w.summaryRepo.UpdateContentField(s.ID, "content_long", long)
+		log.Printf("worker: long summary saved for %s (%d chars)", doc.ID, len(long))
+	}
+
+	log.Printf("worker: document %s done (short=%d med=%d long=%d)", doc.ID, len(short), len(medium), len(long))
 }
 
 func (w *Worker) CleanupExpiredFiles() {

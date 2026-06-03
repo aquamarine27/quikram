@@ -24,6 +24,8 @@ type Config struct {
 	S3Region    string
 
 	LLMProvider string
+	LLMEndpoint string
+	LLMModel    string
 	OpenAIKey   string
 	AnthropicKey string
 
@@ -50,6 +52,8 @@ func Load() *Config {
 		S3Region:    getEnv("S3_REGION", "auto"),
 
 		LLMProvider:  getEnv("LLM_PROVIDER", "openai"),
+		LLMEndpoint:  getEnv("LLM_ENDPOINT", "https://api.openai.com/v1"),
+		LLMModel:     getEnv("LLM_MODEL", ""),
 		OpenAIKey:    getEnv("OPENAI_API_KEY", ""),
 		AnthropicKey: getEnv("ANTHROPIC_API_KEY", ""),
 

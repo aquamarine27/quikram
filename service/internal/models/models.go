@@ -80,13 +80,14 @@ func (d *Document) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Summary struct {
-	ID               uuid.UUID `gorm:"type:uuid;primaryKey;" json:"id"`
-	DocumentID       uuid.UUID `gorm:"type:uuid;not null;index" json:"document_id"`
-	SubjectID        uuid.UUID `gorm:"type:uuid;not null;index" json:"subject_id"`
-	UserID           uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
-	Content          string    `gorm:"type:text;not null" json:"content"`
-	CompressionLevel string    `gorm:"size:20;default:medium" json:"compression_level"`
-	CreatedAt        time.Time `gorm:"autoCreateTime" json:"created_at"`
+	ID            uuid.UUID `gorm:"type:uuid;primaryKey;" json:"id"`
+	DocumentID    uuid.UUID `gorm:"type:uuid;not null;uniqueIndex" json:"document_id"`
+	SubjectID     uuid.UUID `gorm:"type:uuid;not null;index" json:"subject_id"`
+	UserID        uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
+	ContentShort  string    `gorm:"type:text" json:"content_short"`
+	ContentMedium string    `gorm:"type:text" json:"content_medium"`
+	ContentLong   string    `gorm:"type:text" json:"content_long"`
+	CreatedAt     time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
 
 func (s *Summary) BeforeCreate(tx *gorm.DB) error {

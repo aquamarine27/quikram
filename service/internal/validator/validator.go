@@ -44,7 +44,7 @@ func SubjectTitle(title string) error {
 
 func MimeType(mime string) error {
 	allowed := map[string]bool{
-		"application/pdf":                     true,
+		"application/pdf": true,
 		"application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
 	}
 	if !allowed[mime] {
@@ -62,9 +62,9 @@ func Difficulty(d string) error {
 }
 
 func CompressionLevel(level string) error {
-	allowed := map[string]bool{"short": true, "medium": true, "detailed": true}
+	allowed := map[string]bool{"short": true, "medium": true, "long": true}
 	if !allowed[level] {
-		return errors.New("compression level must be short, medium, or detailed")
+		return errors.New("compression level must be short, medium, or long")
 	}
 	return nil
 }

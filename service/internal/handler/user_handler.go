@@ -24,7 +24,7 @@ func (h *UserHandler) GetMe(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "user not found"})
 	}
 
-	uploadsLimit := 10
+	uploadsLimit := 15
 	if user.Plan == "pro" || user.Plan == "proai" {
 		uploadsLimit = -1
 	}
