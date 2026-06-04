@@ -99,8 +99,25 @@ export default function SummaryModal({ subjectId, doc, onClose, generatingRef }:
       // 1 — try to fetch existing summary
       try {
         const s = await getSummary(subjectId, doc.id);
+        const allReady = s.content_short && s.content_medium && s.content_long;
+        if (allReady) {
+          setState({ type: "ready", summary: s });
+          return;
+        }
+        // Partial summary — show available content, trigger fill in background
         if (s.content_short || s.content_medium || s.content_long) {
           setState({ type: "ready", summary: s });
+          createSummary(subjectId, doc.id).catch(() => {});
+          pollRef.current = setTimeout(async () => {
+            try {
+              const updated = await getSummary(subjectId, doc.id);
+              if (updated.content_short && updated.content_medium && updated.content_long) {
+                setState({ type: "ready", summary: updated });
+              }
+            } catch {
+              // stay on ready with partial data
+            }
+          }, 15000);
           return;
         }
         // Summary exists but all empty — still generating, fall through to create
@@ -294,14 +311,28 @@ export default function SummaryModal({ subjectId, doc, onClose, generatingRef }:
             </div>
             <div className="summary-content-divider" />
             <div className="summary-content-text" key={version}>
-              <div className="summary-content-text-inner">
-                {partialLoading ? (t("courses.summary.generating") || "еще генерируется...") : currentContent ? renderSummaryBlocks(currentContent) : (t("courses.summary.emptyContent") || "No content")}
-              </div>
+              {partialLoading ? (
+                <div className="summary-skeleton">
+                  <div className="summary-skeleton-line summary-skeleton-line--short" />
+                  <div className="summary-skeleton-line summary-skeleton-line--medium" />
+                  <div className="summary-skeleton-line summary-skeleton-line--long" />
+                  <div className="summary-skeleton-line summary-skeleton-line--short" />
+                  <div className="summary-skeleton-line summary-skeleton-line--block" />
+                  <div className="summary-skeleton-line summary-skeleton-line--medium" />
+                  <div className="summary-skeleton-line summary-skeleton-line--long" />
+                  <div className="summary-skeleton-line summary-skeleton-line--short" />
+                </div>
+              ) : (
+                <div className="summary-content-text-inner">
+                  {currentContent ? renderSummaryBlocks(currentContent) : (t("courses.summary.emptyContent") || "No content")}
+                </div>
+              )}
             </div>
           </div>
         </div>
       );
       break;
+
   }
 
   return (

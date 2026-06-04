@@ -119,10 +119,9 @@ func (p *OpenAIProvider) chatCompletion(messages []chatMessage, maxTokens int) (
 }
 
 func (p *OpenAIProvider) GenerateSummary(text, level string) (string, error) {
-	instruction := GeneratePrompt(level)
-	prompt := fmt.Sprintf("%s\n\nТекст:\n%s", instruction, text)
+	prompt := GeneratePrompt(level) + text
 	result, err := p.chatCompletion([]chatMessage{
-		{Role: "system", Content: "Ты — ассистент, который пишет конспекты на русском языке. Отвечай только по делу, без объяснений, без размышлений. Ни слова на английском. Никаких вступлений."},
+		{Role: "system", Content: GenerateSystemPrompt()},
 		{Role: "user", Content: prompt},
 	}, MaxTokensForLevel(level))
 	if err != nil {

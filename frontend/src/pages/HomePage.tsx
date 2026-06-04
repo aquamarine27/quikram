@@ -138,11 +138,11 @@ export default function HomePage() {
 
           <div className="home-hero-right">
             <div className="home-collage">
-              <div className="home-collage-photo home-collage-photo--1">
-                <div className="home-collage-inner-photo home-collage-inner-photo--1" ref={photo1Parallax.ref} style={photo1Parallax.style} />
+              <div className="home-collage-photo home-collage-photo--1" ref={photo1Parallax.ref} style={photo1Parallax.style}>
+                <div className="home-collage-inner-photo home-collage-inner-photo--1" />
               </div>
-              <div className="home-collage-photo home-collage-photo--2">
-                <div className="home-collage-inner-photo home-collage-inner-photo--2" ref={photo2Parallax.ref} style={photo2Parallax.style} />
+              <div className="home-collage-photo home-collage-photo--2" ref={photo2Parallax.ref} style={photo2Parallax.style}>
+                <div className="home-collage-inner-photo home-collage-inner-photo--2" />
               </div>
               <div className="home-collage-badge home-collage-badge--members">
                 <span className="home-collage-badge-num">{t("home.membersBadge")}</span>
@@ -197,11 +197,11 @@ export default function HomePage() {
 
           <div className="home-why-right">
             <div className="home-stack">
-              <div className="home-stack-photo home-stack-photo--back">
-                <div className="home-stack-inner home-stack-inner--back" ref={stackBackParallax.ref} style={stackBackParallax.style} />
+              <div className="home-stack-photo home-stack-photo--back" ref={stackBackParallax.ref} style={stackBackParallax.style}>
+                <div className="home-stack-inner home-stack-inner--back" />
               </div>
-              <div className="home-stack-photo home-stack-photo--front">
-                <div className="home-stack-inner home-stack-inner--front" ref={stackFrontParallax.ref} style={stackFrontParallax.style} />
+              <div className="home-stack-photo home-stack-photo--front" ref={stackFrontParallax.ref} style={stackFrontParallax.style}>
+                <div className="home-stack-inner home-stack-inner--front" />
               </div>
             </div>
           </div>

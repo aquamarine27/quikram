@@ -35,24 +35,28 @@ func (w *Worker) ProcessDocument(documentID uuid.UUID) {
 		return
 	}
 
-	reader, err := w.storage.Download(doc.FileKey)
-	if err != nil {
-		log.Printf("worker: failed to download %s: %v", doc.FileKey, err)
-		w.docRepo.UpdateStatus(doc.ID, "error")
-		return
-	}
-	defer reader.Close()
+	// Use already-extracted text if available (e.g. when filling in missing levels)
+	content := doc.ExtractedText
+	if content == "" {
+		reader, err := w.storage.Download(doc.FileKey)
+		if err != nil {
+			log.Printf("worker: failed to download %s: %v", doc.FileKey, err)
+			w.docRepo.UpdateStatus(doc.ID, "error")
+			return
+		}
+		defer reader.Close()
 
-	content, err := extractText(reader, doc.MimeType)
-	if err != nil {
-		log.Printf("worker: failed to extract text %s: %v", doc.ID, err)
-		w.docRepo.UpdateStatus(doc.ID, "error")
-		return
-	}
+		content, err = extractText(reader, doc.MimeType)
+		if err != nil {
+			log.Printf("worker: failed to extract text %s: %v", doc.ID, err)
+			w.docRepo.UpdateStatus(doc.ID, "error")
+			return
+		}
 
-	if err := w.docRepo.UpdateExtractedText(doc.ID, content); err != nil {
-		log.Printf("worker: failed to save text %s: %v", doc.ID, err)
-		return
+		if err := w.docRepo.UpdateExtractedText(doc.ID, content); err != nil {
+			log.Printf("worker: failed to save text %s: %v", doc.ID, err)
+			return
+		}
 	}
 
 	// Find or create summary record before AI calls
@@ -73,34 +77,46 @@ func (w *Worker) ProcessDocument(documentID uuid.UUID) {
 		}
 	}
 
-	// Short — fastest, save immediately
-	short, err := w.ai.GenerateSummary(content, "short")
-	if err != nil {
-		log.Printf("worker: short summary failed %s: %v", doc.ID, err)
-	} else {
-		w.summaryRepo.UpdateContentField(s.ID, "content_short", short)
-		log.Printf("worker: short summary saved for %s (%d chars)", doc.ID, len(short))
+	levels := []struct {
+		field string
+		level string
+	}{
+		{"content_short", "short"},
+		{"content_medium", "medium"},
+		{"content_long", "long"},
 	}
 
-	// Medium — save after short is available
-	medium, err := w.ai.GenerateSummary(content, "medium")
-	if err != nil {
-		log.Printf("worker: medium summary failed %s: %v", doc.ID, err)
-	} else {
-		w.summaryRepo.UpdateContentField(s.ID, "content_medium", medium)
-		log.Printf("worker: medium summary saved for %s (%d chars)", doc.ID, len(medium))
+	needsDelay := false
+	for _, l := range levels {
+		if s.ContentShort != "" && l.field == "content_short" {
+			log.Printf("worker: %s already exists for %s, skipping", l.level, doc.ID)
+			continue
+		}
+		if s.ContentMedium != "" && l.field == "content_medium" {
+			log.Printf("worker: %s already exists for %s, skipping", l.level, doc.ID)
+			continue
+		}
+		if s.ContentLong != "" && l.field == "content_long" {
+			log.Printf("worker: %s already exists for %s, skipping", l.level, doc.ID)
+			continue
+		}
+
+		if needsDelay {
+			log.Printf("worker: waiting 5s before %s for %s", l.level, doc.ID)
+			time.Sleep(5 * time.Second)
+		}
+		needsDelay = true
+
+		result, err := w.ai.GenerateSummary(content, l.level)
+		if err != nil {
+			log.Printf("worker: %s summary failed %s: %v", l.level, doc.ID, err)
+		} else {
+			w.summaryRepo.UpdateContentField(s.ID, l.field, result)
+			log.Printf("worker: %s summary saved for %s (%d chars)", l.level, doc.ID, len(result))
+		}
 	}
 
-	// Long — save after medium is available
-	long, err := w.ai.GenerateSummary(content, "long")
-	if err != nil {
-		log.Printf("worker: long summary failed %s: %v", doc.ID, err)
-	} else {
-		w.summaryRepo.UpdateContentField(s.ID, "content_long", long)
-		log.Printf("worker: long summary saved for %s (%d chars)", doc.ID, len(long))
-	}
-
-	log.Printf("worker: document %s done (short=%d med=%d long=%d)", doc.ID, len(short), len(medium), len(long))
+	log.Printf("worker: document %s done", doc.ID)
 }
 
 func (w *Worker) CleanupExpiredFiles() {

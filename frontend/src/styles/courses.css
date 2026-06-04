@@ -389,6 +389,7 @@
   color: var(--text-primary);
   margin: 0 0 5px;
   font-weight: 500;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -731,6 +732,7 @@
   font-size: 15px;
   color: var(--text-primary);
   margin: 0 0 4px;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -890,6 +892,7 @@
   font-size: 13px;
   color: var(--text-primary);
   font-weight: 500;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -981,6 +984,7 @@
   width: 96px;
   height: 96px;
   margin-bottom: 24px;
+  filter: drop-shadow(0 0 20px rgba(239,68,68,0.15));
 }
 
 .summary-processing-ring svg {
@@ -1001,16 +1005,17 @@
   stroke-width: 3;
   stroke-linecap: round;
   transform-origin: center;
-  animation: summaryArcDash 2.4s ease-in-out infinite, summaryArcRotate 4s linear infinite;
+  animation: summaryLongDash 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite, summarySpin 3s linear infinite;
 }
 
-@keyframes summaryArcDash {
+@keyframes summaryLongDash {
   0% { stroke-dashoffset: 220; }
-  50% { stroke-dashoffset: 50; }
+  40% { stroke-dashoffset: 30; }
+  60% { stroke-dashoffset: 30; }
   100% { stroke-dashoffset: 220; }
 }
 
-@keyframes summaryArcRotate {
+@keyframes summarySpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
@@ -1021,8 +1026,8 @@
   stroke-width: 3;
   stroke-linecap: round;
   transform-origin: center;
-  opacity: 0.3;
-  animation: summaryArcDash 2.4s ease-in-out 0.6s infinite, summaryArcRotate 4s linear 0.6s infinite reverse;
+  opacity: 0.25;
+  animation: summaryLongDash 2.8s cubic-bezier(0.4, 0, 0.2, 1) 0.7s infinite, summarySpin 3s linear 0.7s infinite reverse;
 }
 
 .summary-processing-icon-inner {
@@ -1033,12 +1038,12 @@
   width: 36px;
   height: 36px;
   color: var(--link-hover);
-  animation: summaryFloat 2.8s ease-in-out infinite;
+  animation: summaryPulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes summaryFloat {
-  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) translateY(0); }
-  50% { opacity: 1; transform: translate(-50%, -50%) translateY(-4px); }
+@keyframes summaryPulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.92); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
 }
 
 .summary-processing-dots {
@@ -1048,11 +1053,11 @@
 }
 
 .summary-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--link-hover);
-  animation: summaryDotBounce 1.6s ease-in-out infinite;
+  animation: summaryRipple 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .summary-dot:nth-child(2) {
@@ -1063,9 +1068,9 @@
   animation-delay: 0.6s;
 }
 
-@keyframes summaryDotBounce {
-  0%, 80%, 100% { transform: scale(0.35); opacity: 0.2; }
-  40% { transform: scale(1); opacity: 1; }
+@keyframes summaryRipple {
+  0%, 100% { transform: scale(0.5); opacity: 0.2; box-shadow: none; }
+  50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 12px var(--link-hover); }
 }
 
 .summary-body-no-icon svg { color: var(--text-secondary); }
@@ -1331,17 +1336,13 @@
 }
 
 .summary-content-text {
-  animation: summaryVersionIn 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: summaryVersionIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes summaryVersionIn {
   0% {
     opacity: 0;
-    transform: translateY(24px) scale(0.96);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-2px) scale(1.01);
+    transform: translateY(16px) scale(0.98);
   }
   100% {
     opacity: 1;
@@ -1384,6 +1385,39 @@
 @keyframes summaryBlockIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Skeleton shimmer for loading summary ─── */
+.summary-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.summary-skeleton-line {
+  height: 14px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--border-color) 0%, var(--nav-bg) 50%, var(--border-color) 100%);
+  background-size: 200% 100%;
+  animation: summaryShimmer 1.8s ease-in-out infinite;
+}
+
+.summary-skeleton-line--short { width: 38%; }
+.summary-skeleton-line--medium { width: 65%; }
+.summary-skeleton-line--long { width: 88%; }
+.summary-skeleton-line--block { height: 40px; width: 100%; border-radius: 10px; }
+
+.summary-skeleton-line:nth-child(2) { animation-delay: 0.08s; }
+.summary-skeleton-line:nth-child(3) { animation-delay: 0.16s; }
+.summary-skeleton-line:nth-child(4) { animation-delay: 0.24s; }
+.summary-skeleton-line:nth-child(5) { animation-delay: 0.32s; }
+.summary-skeleton-line:nth-child(6) { animation-delay: 0.4s; }
+.summary-skeleton-line:nth-child(7) { animation-delay: 0.48s; }
+
+@keyframes summaryShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* ─── Test List Modal ─── */

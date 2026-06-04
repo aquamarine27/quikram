@@ -8,7 +8,6 @@ import (
 
 	"quikram-service/internal/repository"
 	"quikram-service/internal/service"
-	"quikram-service/internal/validator"
 	"quikram-service/internal/worker"
 )
 
@@ -124,11 +123,16 @@ func (h *SummaryHandler) Create(c *fiber.Ctx) error {
 	}
 
 	existing, _ := h.summaryRepo.FindByDocumentID(docID)
-	if existing != nil && (existing.ContentShort != "" || existing.ContentMedium != "" || existing.ContentLong != "") {
+	if existing != nil && existing.ContentShort != "" && existing.ContentMedium != "" && existing.ContentLong != "" {
 		return c.JSON(existing)
 	}
+	if existing != nil && (existing.ContentShort != "" || existing.ContentMedium != "" || existing.ContentLong != "") {
+		// Partial summary — fill in missing levels only
+		go h.worker.ProcessDocument(doc.ID)
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": "processing", "message": "summary is being generated"})
+	}
 	if existing != nil {
-		// summary exists but empty — still being generated
+		// Summary exists but all empty — worker already running, don't restart
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{"status": "processing", "message": "summary is being generated"})
 	}
 
@@ -147,20 +151,6 @@ func (h *SummaryHandler) Regenerate(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid summary id"})
 	}
 
-	var req struct {
-		CompressionLevel string `json:"compression_level"`
-	}
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid request body"})
-	}
-
-	if req.CompressionLevel == "" {
-		req.CompressionLevel = "medium"
-	}
-	if err := validator.CompressionLevel(req.CompressionLevel); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
 	summary, err := h.summaryRepo.FindByID(summaryID)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "summary not found"})
@@ -170,5 +160,11 @@ func (h *SummaryHandler) Regenerate(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "access denied"})
 	}
 
+	// Clear existing content so worker regenerates all levels
+	h.summaryRepo.UpdateContentField(summaryID, "content_short", "")
+	h.summaryRepo.UpdateContentField(summaryID, "content_medium", "")
+	h.summaryRepo.UpdateContentField(summaryID, "content_long", "")
+
+	go h.worker.ProcessDocument(summary.DocumentID)
 	return c.JSON(fiber.Map{"message": "regeneration started"})
 }

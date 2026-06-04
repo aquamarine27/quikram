@@ -1,11 +1,15 @@
 import { useEffect, useRef } from "react";
 
+function isMobile() {
+  return window.innerWidth < 768;
+}
+
 export function useSmoothSnap() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || isMobile()) return;
 
     let isScrolling = false;
     let timeout: number | null = null;
