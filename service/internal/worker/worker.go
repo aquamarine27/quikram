@@ -86,7 +86,6 @@ func (w *Worker) ProcessDocument(documentID uuid.UUID) {
 		{"content_long", "long"},
 	}
 
-	needsDelay := false
 	for _, l := range levels {
 		if s.ContentShort != "" && l.field == "content_short" {
 			log.Printf("worker: %s already exists for %s, skipping", l.level, doc.ID)
@@ -100,12 +99,6 @@ func (w *Worker) ProcessDocument(documentID uuid.UUID) {
 			log.Printf("worker: %s already exists for %s, skipping", l.level, doc.ID)
 			continue
 		}
-
-		if needsDelay {
-			log.Printf("worker: waiting 5s before %s for %s", l.level, doc.ID)
-			time.Sleep(5 * time.Second)
-		}
-		needsDelay = true
 
 		result, err := w.ai.GenerateSummary(content, l.level)
 		if err != nil {
